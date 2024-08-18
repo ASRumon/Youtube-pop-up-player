@@ -145,9 +145,133 @@ addListenersToLinks();
 ```
 
 
+# User with [Freetube App](https://freetubeapp.io) can use this 
+## It has an extra functionality to open videos in Freetube app
+```
+// Function to handle video links
+function handleVideoLink(link) {
+    link.addEventListener('click', function(event) {
+        event.stopImmediatePropagation(); // Stop other event listeners
+        event.preventDefault(); // Prevent the default link behavior
 
+        // Extract the video ID from the href
+        const videoId = link.getAttribute('href').split('v=')[1];
 
+        // Create the YouTube embed link
+        const embedLink = `https://www.youtube.com/embed/${videoId}`;
+        const youtubeLink = `https://www.youtube.com/watch?v=${videoId}`; // This is the link in the desired format
 
+        // Create popup overlay
+        const overlay = document.createElement('div');
+        overlay.classList.add('popup-overlay');
+        overlay.style.position = 'fixed';
+        overlay.style.top = 0;
+        overlay.style.left = 0;
+        overlay.style.width = '100%';
+        overlay.style.height = '100%';
+        overlay.style.backgroundColor = 'rgba(0, 0, 0, 0.8)';
+        overlay.style.zIndex = '9999'; // Very high z-index
+        overlay.style.display = 'flex';
+        overlay.style.justifyContent = 'center';
+        overlay.style.alignItems = 'center';
+        document.body.appendChild(overlay);
+
+        // Create popup container
+        const popup = document.createElement('div');
+        popup.style.position = 'relative';
+        popup.style.width = '80%';
+        popup.style.height = '80%';
+        popup.style.backgroundColor = '#fff';
+        popup.style.borderRadius = '10px';
+        popup.style.overflow = 'hidden';
+        popup.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.2)'; // Added shadow for depth
+        overlay.appendChild(popup);
+
+        // Create a container for the buttons
+        const buttonContainer = document.createElement('div');
+        buttonContainer.style.position = 'absolute';
+        buttonContainer.style.top = '10px';
+        buttonContainer.style.right = '10px';
+        buttonContainer.style.display = 'flex';
+        buttonContainer.style.gap = '10px';
+        overlay.appendChild(buttonContainer);
+
+        // Create iframe to show the content
+        const iframe = document.createElement('iframe');
+        iframe.src = embedLink;
+        iframe.style.width = '100%';
+        iframe.style.height = '100%';
+        iframe.style.border = 'none';
+        popup.appendChild(iframe);
+
+        // Create the close button
+        const closeButton = document.createElement('button');
+        closeButton.textContent = 'Close';
+        closeButton.style.padding = '8px';
+        closeButton.style.fontSize = '16px';
+        closeButton.style.backgroundColor = '#f44336';
+        closeButton.style.color = '#fff';
+        closeButton.style.border = 'none';
+        closeButton.style.borderRadius = '5px';
+        closeButton.style.cursor = 'pointer';
+        closeButton.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+        closeButton.addEventListener('click', function() {
+            document.body.removeChild(overlay); // Remove the overlay
+        });
+        buttonContainer.appendChild(closeButton);
+
+        // Create an anchor tag to wrap the button
+        const anchor = document.createElement('a');
+        anchor.href = 'freetube://'+ youtubeLink;
+        // anchor.target = '_blank'; // Open in a new tab
+        buttonContainer.appendChild(anchor);
+
+        // Create the open in new tab button inside the anchor tag
+        const newTabButton = document.createElement('button');
+        newTabButton.textContent = 'Open in Freetube';
+        newTabButton.style.padding = '8px';
+        newTabButton.style.fontSize = '16px';
+        newTabButton.style.backgroundColor = '#008CBA';
+        newTabButton.style.color = '#fff';
+        newTabButton.style.border = 'none';
+        newTabButton.style.borderRadius = '5px';
+        newTabButton.style.cursor = 'pointer';
+        newTabButton.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.2)';
+        anchor.appendChild(newTabButton); // Append the button inside the anchor tag
+    });
+}
+
+// Function to add listeners to existing and dynamically added video links
+function addListenersToLinks() {
+    document.querySelectorAll('#video-title-link').forEach(function(link) {
+        handleVideoLink(link);
+    });
+}
+
+// Use MutationObserver to detect dynamically added elements
+const observer = new MutationObserver(function(mutations) {
+    mutations.forEach(function(mutation) {
+        mutation.addedNodes.forEach(function(node) {
+            if (node.nodeType === 1 && node.matches('#video-title-link')) {
+                handleVideoLink(node);
+            }
+            if (node.nodeType === 1) {
+                addListenersToLinks(); // Handle nested nodes
+            }
+        });
+    });
+});
+
+// Start observing the document for changes
+observer.observe(document.body, {
+    childList: true,
+    subtree: true
+});
+
+// Add listeners to links that already exist on the page
+addListenersToLinks();
+
+```
 
 # Tampermonkey User Script Installation Guide
 
