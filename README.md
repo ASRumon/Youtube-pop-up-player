@@ -1,10 +1,10 @@
 # Youtube-pop-up-player
 Frustrated with YouTube's slow loading? Use this script to play YouTube videos in a pop-up, bypassing the need to reload YouTube repeatedly.
 
-<video width="640" height="360" controls>
-  <source src="Recording 2024-08-18 174324.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+
+
+https://github.com/user-attachments/assets/4d4a11c8-250c-4eef-b160-8f9f1d2e0ad2
+
 
 
 ```
